@@ -15,7 +15,8 @@ using Workforce.Models.ViewModels;
 using System.Data.SqlClient;
 
 namespace Workforce.Controllers {
-    public class StudentController : Controller {
+    public class StudentController : Controller
+    {
         private readonly IConfiguration _config;
 
         public StudentController (IConfiguration config) {
@@ -78,7 +79,8 @@ namespace Workforce.Controllers {
 
                 Student student = (await conn.QueryAsync<Student> (sql)).ToList ().Single ();
 
-                if (student == null) {
+                if (student == null)
+                {
                     return NotFound ();
                 }
 
@@ -144,7 +146,6 @@ namespace Workforce.Controllers {
                 return View (student);
             }
         }
-
         [HttpGet]
         public async Task<IActionResult> Edit (int? id) {
             if (id == null) {
@@ -181,7 +182,7 @@ namespace Workforce.Controllers {
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit (int id, StudentEditViewModel model) {
+        public async Task<IActionResult> Edit ([FromRoute] int id, StudentEditViewModel model) {
             if (id != model.Student.Id) {
                 return NotFound ();
             }
