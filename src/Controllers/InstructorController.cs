@@ -41,8 +41,10 @@ namespace Workforce.Controllers
                 i.FirstName,
                 i.LastName,
                 i.SlackHandle,
-                i.Specialty
+                i.Specialty,
+                i.CohortId,
                 c.Id,
+                c.Name
             from Instructor i
             join Cohort c on i.CohortId = c.Id
         ";
@@ -64,6 +66,37 @@ namespace Workforce.Controllers
                     );
                 return View(instructors.Values);
 
+            }
+        }
+
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            string sql = $@"
+            select
+                i.Id,
+                i.FirstName,
+                i.LastName,
+                i.SlackHandle
+                i.Specialty
+            from Instructor i
+            WHERE i.Id = {id}";
+
+            using (IDbConnection conn = Connection)
+            {
+
+                Instructor instructor = (await conn.QueryAsync<Instructor>(sql)).ToList().Single();
+
+                if (instructor == null)
+                {
+                    return NotFound();
+                }
+
+                return View(instructor);
             }
         }
 
@@ -136,10 +169,10 @@ namespace Workforce.Controllers
             }
         }
 
-        private Task<object> CohortList(object cohortId)
-        {
-            throw new NotImplementedException();
-        }
+        //private Task<object> CohortList(object cohortId)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
 
         //Get Instructors
@@ -160,6 +193,7 @@ namespace Workforce.Controllers
                     i.Specialty
                     i.CohortId,
                     c.Id,
+                    c.Name
                 FROM Instructor i
                 JOIN Cohort c on i.CohortId = c.Id
                 WHERE i.Id = {id}";
@@ -230,7 +264,8 @@ namespace Workforce.Controllers
                     i.FirstName,
                     i.LastName,
                     i.SlackHandle,
-                    i.Specialty
+                    i.Specialty,
+                    i.CohortId
                 from Instructor i
                 WHERE i.Id = {id}";
 
